@@ -1,38 +1,28 @@
 from random import randint
-
 import pygame
 
-# Инициализация PyGame для тестов
 pygame.init()
 
-# Константы для размеров поля и сетки:
 SCREEN_WIDTH, SCREEN_HEIGHT = 640, 480
 GRID_SIZE = 20
 GRID_WIDTH = SCREEN_WIDTH // GRID_SIZE
 GRID_HEIGHT = SCREEN_HEIGHT // GRID_SIZE
 
-# Направления движения:
 UP = (0, -1)
 DOWN = (0, 1)
 LEFT = (-1, 0)
 RIGHT = (1, 0)
 
-# Цвет фона - черный:
 BOARD_BACKGROUND_COLOR = (0, 0, 0)
 
-# Цвет границы ячейки
 BORDER_COLOR = (93, 216, 228)
 
-# Цвет яблока
 APPLE_COLOR = (255, 0, 0)
 
-# Цвет змейки
 SNAKE_COLOR = (0, 255, 0)
 
-# Скорость движения змейки:
 SPEED = 20
 
-# Глобальные переменные для экрана и часов
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), 0, 32)
 clock = pygame.time.Clock()
 
@@ -150,12 +140,10 @@ class Snake(GameObject):
             pygame.draw.rect(surface, self.body_color, rect)
             pygame.draw.rect(surface, BORDER_COLOR, rect, 1)
 
-        # Отрисовка головы змейки
         head_rect = pygame.Rect(self.positions[0], (GRID_SIZE, GRID_SIZE))
         pygame.draw.rect(surface, self.body_color, head_rect)
         pygame.draw.rect(surface, BORDER_COLOR, head_rect, 1)
 
-        # Затирание последнего сегмента
         if self.last:
             last_rect = pygame.Rect(self.last, (GRID_SIZE, GRID_SIZE))
             pygame.draw.rect(surface, BOARD_BACKGROUND_COLOR, last_rect)
@@ -194,41 +182,32 @@ def handle_keys(game_object):
 
 def main():
     """Основной игровой цикл."""
-    # Создание экземпляров классов
     snake = Snake()
     apple = Apple()
 
     while True:
         clock.tick(SPEED)
 
-        # Обработка нажатий клавиш
         handle_keys(snake)
 
-        # Обновление направления движения змейки
         snake.update_direction()
 
-        # Движение змейки
         snake.move()
 
-        # Проверка, съела ли змейка яблоко
         if snake.get_head_position() == apple.position:
             snake.length += 1
             apple.randomize_position()
-            # Убеждаемся, что яблоко не появилось на змейке
             while apple.position in snake.positions:
                 apple.randomize_position()
 
-        # Проверка столкновения змейки с собой
         if snake.get_head_position() in snake.positions[1:]:
             snake.reset()
             apple.randomize_position()
 
-        # Отрисовка объектов
-        screen.fill(BOARD_BACKGROUND_COLOR)  # Очистка экрана
+        screen.fill(BOARD_BACKGROUND_COLOR) 
         snake.draw(screen)
         apple.draw(screen)
 
-        # Обновление экрана
         pygame.display.update()
 
 
