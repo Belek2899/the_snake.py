@@ -1,8 +1,9 @@
 import os
-import pygame
-from random import randint, choice
+from random import choice, randint
 
-os.environ["SDL_VIDEODRIVER"] = "dummy"
+os.environ['SDL_VIDEODRIVER'] = 'dummy'
+
+import pygame  # noqa: E402, I001
 
 
 pygame.init()
@@ -29,7 +30,7 @@ SPEED = 20
 
 try:
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), 0, 32)
-    pygame.display.set_caption("Змейка")
+    pygame.display.set_caption('Змейка')
 except pygame.error:
     import pygame.display
 
@@ -198,5 +199,5 @@ def main():
         pygame.display.update()
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()
