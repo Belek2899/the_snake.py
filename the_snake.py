@@ -1,4 +1,4 @@
-from random import randint
+import random
 import pygame
 
 pygame.init()
@@ -14,11 +14,8 @@ LEFT = (-1, 0)
 RIGHT = (1, 0)
 
 BOARD_BACKGROUND_COLOR = (0, 0, 0)
-
 BORDER_COLOR = (93, 216, 228)
-
 APPLE_COLOR = (255, 0, 0)
-
 SNAKE_COLOR = (0, 255, 0)
 
 SPEED = 20
@@ -48,12 +45,7 @@ class GameObject:
         self.body_color = None
 
     def draw(self, surface):
-        """
-        Абстрактный метод для отрисовки объекта.
-
-        Args:
-            surface: Поверхность для отрисовки.
-        """
+        """Абстрактный метод для отрисовки объекта."""
         pass
 
 
@@ -67,21 +59,14 @@ class Apple(GameObject):
         self.randomize_position()
 
     def randomize_position(self):
-        """
-        Устанавливает случайное положение яблока на игровом поле.
-        """
+        """Устанавливает случайное положение яблока на игровом поле."""
         self.position = (
-            randint(0, GRID_WIDTH - 1) * GRID_SIZE,
-            randint(0, GRID_HEIGHT - 1) * GRID_SIZE,
+            random.randint(0, GRID_WIDTH - 1) * GRID_SIZE,
+            random.randint(0, GRID_HEIGHT - 1) * GRID_SIZE,
         )
 
     def draw(self, surface):
-        """
-        Отрисовывает яблоко на игровой поверхности.
-
-        Args:
-            surface: Поверхность для отрисовки.
-        """
+        """Отрисовывает яблоко на игровой поверхности."""
         rect = pygame.Rect(self.position, (GRID_SIZE, GRID_SIZE))
         pygame.draw.rect(surface, self.body_color, rect)
         pygame.draw.rect(surface, BORDER_COLOR, rect, 1)
@@ -107,12 +92,7 @@ class Snake(GameObject):
             self.next_direction = None
 
     def get_head_position(self):
-        """
-        Возвращает позицию головы змейки.
-
-        Returns:
-            tuple: Координаты головы змейки.
-        """
+        """Возвращает позицию головы змейки."""
         return self.positions[0]
 
     def move(self):
@@ -129,12 +109,7 @@ class Snake(GameObject):
             self.last = None
 
     def draw(self, surface):
-        """
-        Отрисовывает змейку на экране, затирая след.
-
-        Args:
-            surface: Поверхность для отрисовки.
-        """
+        """Отрисовывает змейку на экране, затирая след."""
         for position in self.positions[:-1]:
             rect = pygame.Rect(position, (GRID_SIZE, GRID_SIZE))
             pygame.draw.rect(surface, self.body_color, rect)
@@ -189,9 +164,7 @@ def main():
         clock.tick(SPEED)
 
         handle_keys(snake)
-
         snake.update_direction()
-
         snake.move()
 
         if snake.get_head_position() == apple.position:
@@ -204,7 +177,7 @@ def main():
             snake.reset()
             apple.randomize_position()
 
-        screen.fill(BOARD_BACKGROUND_COLOR) 
+        screen.fill(BOARD_BACKGROUND_COLOR)
         snake.draw(screen)
         apple.draw(screen)
 
