@@ -3,6 +3,7 @@
 import random
 import pygame
 
+# pylint: disable=no-member
 pygame.init()
 
 SCREEN_WIDTH, SCREEN_HEIGHT = 640, 480
@@ -55,12 +56,11 @@ class GameObject:
 class Apple(GameObject):
     """Класс яблока в игре."""
 
-    def __init__(self, position=None):
+    def __init__(self):
         """Инициализирует яблоко с красным цветом и случайной позицией."""
-        super().__init__(position)
+        super().__init__()
         self.body_color = APPLE_COLOR
-        if position is None:
-            self.randomize_position()
+        self.randomize_position()
 
     def randomize_position(self):
         """Устанавливает случайное положение яблока на игровом поле."""
@@ -79,9 +79,9 @@ class Apple(GameObject):
 class Snake(GameObject):
     """Класс змейки в игре."""
 
-    def __init__(self, position=None):
+    def __init__(self):
         """Инициализирует змейку в начальном состоянии."""
-        super().__init__(position)
+        super().__init__()
         self.body_color = SNAKE_COLOR
         self.length = 1
         self.positions = [self.position]
@@ -150,16 +150,20 @@ def handle_keys(snake):
               нужно изменить.
     """
     for event in pygame.event.get():
-        if event.type == pygame.QUIT:
+        if event.type == pygame.QUIT:  # pylint: disable=no-member
             pygame.quit()
             raise SystemExit
-        elif event.type == pygame.KEYDOWN:
+        elif event.type == pygame.KEYDOWN:  # pylint: disable=no-member
+            # pylint: disable=no-member
             if event.key == pygame.K_UP and snake.direction != DOWN:
                 snake.next_direction = UP
+            # pylint: disable=no-member
             elif event.key == pygame.K_DOWN and snake.direction != UP:
                 snake.next_direction = DOWN
+            # pylint: disable=no-member
             elif event.key == pygame.K_LEFT and snake.direction != RIGHT:
                 snake.next_direction = LEFT
+            # pylint: disable=no-member
             elif event.key == pygame.K_RIGHT and snake.direction != LEFT:
                 snake.next_direction = RIGHT
 
