@@ -1,6 +1,7 @@
 """Игра Змейка на Pygame."""
 
 import random
+
 import pygame
 
 # pylint: disable=no-member
@@ -24,7 +25,7 @@ SNAKE_COLOR = (0, 255, 0)
 SPEED = 20
 
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), 0, 32)
-pygame.display.set_caption("Змейка")
+pygame.display.set_caption('Змейка')
 clock = pygame.time.Clock()
 
 
@@ -50,7 +51,7 @@ class GameObject:
 
     def draw(self, surface):
         """Абстрактный метод для отрисовки объекта."""
-        raise NotImplementedError("Метод draw должен быть переопределен")
+        raise NotImplementedError('Метод draw должен быть переопределен')
 
 
 class Apple(GameObject):
@@ -197,5 +198,5 @@ def main():
         pygame.display.update()
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()
