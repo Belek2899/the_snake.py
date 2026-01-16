@@ -4,9 +4,6 @@ import random
 
 import pygame as pg
 
-# pylint: disable=no-member
-pg.init()
-
 SCREEN_WIDTH, SCREEN_HEIGHT = 640, 480
 GRID_SIZE = 20
 GRID_WIDTH = SCREEN_WIDTH // GRID_SIZE
@@ -29,10 +26,6 @@ SNAKE_COLOR = (0, 255, 0)
 
 SPEED = 20
 
-screen = pg.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), 0, 32)
-pg.display.set_caption('Змейка')
-clock = pg.time.Clock()
-
 
 class GameObject:
     """Базовый класс для игровых объектов."""
@@ -47,13 +40,13 @@ class GameObject:
         self.position = BOARD_CENTER
         self.body_color = body_color
 
-    def draw_cell(self, position):
+    def draw_cell(self, position, surface):
         """Отрисовывает одну ячейку."""
         rect = pg.Rect(position, (GRID_SIZE, GRID_SIZE))
-        pg.draw.rect(screen, self.body_color, rect)
-        pg.draw.rect(screen, BORDER_COLOR, rect, 1)
+        pg.draw.rect(surface, self.body_color, rect)
+        pg.draw.rect(surface, BORDER_COLOR, rect, 1)
 
-    def draw(self):
+    def draw(self, surface):
         """Абстрактный метод для отрисовки объекта."""
         raise NotImplementedError('Метод draw должен быть переопределен')
 
@@ -61,12 +54,16 @@ class GameObject:
 class Apple(GameObject):
     """Класс яблока в игре."""
 
-    def __init__(self, occupied_positions=(BOARD_CENTER,)):
-        """Инициализирует яблоко с красным цветом и случайной позицией."""
-        super().__init__(APPLE_COLOR)
-        self.randomize_position(occupied_positions)
+    def __init__(self, body_color=APPLE_COLOR):
+        """
+        Инициализирует яблоко с заданным цветом и случайной позицией.
+        Args:
+            body_color: Цвет яблока (по умолчанию красный).
+        """
+        super().__init__(body_color)
+        self.randomize_position()
 
-    def randomize_position(self, occupied_positions):
+    def randomize_position(self, occupied_positions=(BOARD_CENTER,)):
         """Устанавливает случайное положение яблока на игровом поле."""
         while True:
             self.position = (
@@ -76,17 +73,21 @@ class Apple(GameObject):
             if self.position not in occupied_positions:
                 break
 
-    def draw(self):
+    def draw(self, surface):
         """Отрисовывает яблоко на игровой поверхности."""
-        self.draw_cell(self.position)
+        self.draw_cell(self.position, surface)
 
 
 class Snake(GameObject):
     """Класс змейки в игре."""
 
-    def __init__(self):
-        """Инициализирует змейку в начальном состоянии."""
-        super().__init__(SNAKE_COLOR)
+    def __init__(self, body_color=SNAKE_COLOR):
+        """
+        Инициализирует змейку в начальном состоянии.
+        Args:
+            body_color: Цвет змейки (по умолчанию зелёный).
+        """
+        super().__init__(body_color)
         self.length = 1
         self.positions = [self.position]
         self.direction = RIGHT
@@ -114,10 +115,10 @@ class Snake(GameObject):
         if len(self.positions) > self.length:
             self.positions.pop()
 
-    def draw(self):
+    def draw(self, surface):
         """Отрисовывает змейку на экране."""
         for position in self.positions:
-            self.draw_cell(position)
+            self.draw_cell(position, surface)
 
     def reset(self):
         """Сбрасывает змейку в начальное состояние."""
@@ -142,7 +143,7 @@ def handle_keys(snake):
     """
     for event in pg.event.get():
         if event.type == pg.QUIT:  # pylint: disable=no-member
-            pg.quit()
+            pg.quit()  # pylint: disable=no-member
             raise SystemExit
         elif event.type == pg.KEYDOWN:  # pylint: disable=no-member
             # pylint: disable=no-member
@@ -159,10 +160,18 @@ def handle_keys(snake):
                 snake.next_direction = RIGHT
 
 
+# Инициализация pygame
+# pylint: disable=no-member
+pg.init()
+screen = pg.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), 0, 32)
+pg.display.set_caption('Змейка')
+clock = pg.time.Clock()
+
+
 def main():
     """Основная функция игры."""
     snake = Snake()
-    apple = Apple(snake.positions)
+    apple = Apple()
 
     while True:
         clock.tick(SPEED)
@@ -179,8 +188,8 @@ def main():
             apple.randomize_position(snake.positions)
 
         screen.fill(BOARD_BACKGROUND_COLOR)
-        apple.draw()
-        snake.draw()
+        apple.draw(screen)
+        snake.draw(screen)
 
         pg.display.update()
 
