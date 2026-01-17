@@ -4,6 +4,7 @@ import random
 
 import pygame as pg
 
+# Константы
 SCREEN_WIDTH, SCREEN_HEIGHT = 640, 480
 GRID_SIZE = 20
 GRID_WIDTH = SCREEN_WIDTH // GRID_SIZE
@@ -25,6 +26,13 @@ APPLE_COLOR = (255, 0, 0)
 SNAKE_COLOR = (0, 255, 0)
 
 SPEED = 20
+
+# Инициализация pygame
+# pylint: disable=no-member
+pg.init()
+screen = pg.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), 0, 32)
+pg.display.set_caption('Змейка')
+clock = pg.time.Clock()
 
 
 class GameObject:
@@ -54,17 +62,19 @@ class GameObject:
 class Apple(GameObject):
     """Класс яблока в игре."""
 
-    def __init__(self, body_color=APPLE_COLOR):
+    def __init__(self, body_color=APPLE_COLOR,
+                 occupied_positions=(BOARD_CENTER,)):
         """
         Инициализирует яблоко с заданным цветом и случайной позицией.
         Args:
             body_color: Цвет яблока (по умолчанию красный).
+            occupied_positions: Занятые позиции, которых нужно избегать.
         """
         super().__init__(body_color)
-        self.randomize_position()
+        self.randomize_position(occupied_positions)
 
-    def randomize_position(self, occupied_positions=(BOARD_CENTER,)):
-        """Устанавливает случайное положение яблока на игровом поле."""
+    def randomize_position(self, occupied_positions):
+        """Устанавливает случайное положение яблока на поле."""
         while True:
             self.position = (
                 random.randint(0, GRID_WIDTH - 1) * GRID_SIZE,
@@ -160,18 +170,10 @@ def handle_keys(snake):
                 snake.next_direction = RIGHT
 
 
-# Инициализация pygame
-# pylint: disable=no-member
-pg.init()
-screen = pg.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), 0, 32)
-pg.display.set_caption('Змейка')
-clock = pg.time.Clock()
-
-
 def main():
     """Основная функция игры."""
     snake = Snake()
-    apple = Apple()
+    apple = Apple(occupied_positions=snake.positions)
 
     while True:
         clock.tick(SPEED)
